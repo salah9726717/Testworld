@@ -48,7 +48,21 @@ async function loadAccount() {
     const username = user.username ? `@${user.username}` : [user.first_name, user.last_name].filter(Boolean).join(" ") || "Telegram User";
     document.getElementById("profileUsername").textContent = username;
     document.getElementById("profileTelegramId").textContent = String(user.telegram_id);
-    document.getElementById("profileAvatar").textContent = (user.first_name || user.username || "U").trim().charAt(0).toUpperCase();
+    const avatar = document.getElementById("profileAvatar");
+    avatar.textContent = (user.first_name || user.username || "U").trim().charAt(0).toUpperCase();
+
+    // Telegram supplies photo_url through the Mini App user object when available.
+    // Use the client-side Telegram object for display; authentication remains server-verified.
+    const telegramPhoto = tg?.initDataUnsafe?.user?.photo_url;
+    if (telegramPhoto) {
+      const image = document.createElement("img");
+      image.className = "profile-avatar-image";
+      image.alt = "";
+      image.src = telegramPhoto;
+      image.referrerPolicy = "no-referrer";
+      image.onerror = () => image.remove();
+      avatar.replaceChildren(image);
+    }
   } catch (error) {
     console.error("Account load failed:", error);
     showNotice(error.message);
