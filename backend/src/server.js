@@ -21,6 +21,25 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const frontendDir = path.resolve(__dirname, '../../frontend');
 
 app.disable('x-powered-by');
+
+// Allow the deployed Vercel frontend to call this Render API.
+const allowedFrontendOrigins = (process.env.FRONTEND_URL || '')
+  .split(',')
+  .map(value => value.trim())
+  .filter(Boolean);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const isVercelPreview = typeof origin === 'string' &&
+    /^https:\/\/[a-z0-9-]+(?:-[a-z0-9-]+)*\.vercel\.app$/i.test(origin);
+  if (origin && (allowedFrontendOrigins.includes(origin) || isVercelPreview)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+  }
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(express.json({ limit: '10kb' }));
 

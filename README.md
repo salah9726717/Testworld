@@ -29,3 +29,10 @@ This build keeps the existing visible app only: Welcome intro, Home balance, +10
 - TON Connect will not fully connect until the manifest URL and icon URL are publicly reachable over HTTPS.
 - The +10 TW action is a server-side database increment. It is intentionally repeatable, matching the current app's existing tap behavior; the API rate-limits excessive requests.
 - TW is an in-app unit. This implementation does not claim that TW is TON or a withdrawable on-chain asset.
+
+
+## Vercel frontend + Render API deployment
+- The frontend API base URL is configured to `https://testworld-8y9w.onrender.com/api`.
+- The backend allows Vercel preview origins (`*.vercel.app`) and any exact origins listed in the Render `FRONTEND_URL` environment variable.
+- If using a custom Vercel domain, add its full HTTPS origin to Render `FRONTEND_URL` (for example `https://your-app.vercel.app`).
+- Redeploy both the Render backend and Vercel frontend after pushing these changes.

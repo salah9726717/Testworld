@@ -8,7 +8,7 @@ const intro = document.getElementById("intro");
 const introText = document.getElementById("introText");
 const app = document.getElementById("app");
 const phrase = "Welcome to Test World";
-const API = "/api";
+const API = "https://testworld-8y9w.onrender.com/api";
 const initData = tg?.initData || "";
 let currentBalance = 0;
 let tonConnectUI;
